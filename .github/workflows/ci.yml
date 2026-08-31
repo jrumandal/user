@@ -1,0 +1,125 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout user
+        uses: actions/checkout@v4
+        with:
+          path: user
+
+      # The user MF depends on the @shared/* packages. For a self-contained CI
+      # (no registry required), check out the shared repo as a sibling and wire
+      # up a pnpm workspace so `workspace:*` resolves locally.
+      - name: Checkout shared (sibling)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/shared
+          path: shared
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.24.0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: user/pnpm-lock.yaml
+
+      - name: Create workspace root
+        working-directory: .
+        run: |
+          cat > pnpm-workspace.yaml <<'EOF'
+          packages:
+            - shared/packages/*
+            - user
+          EOF
+          cat > package.json <<'EOF'
+          { "name": "mf-ci-root", "version": "0.0.0", "private": true, "packageManager": "pnpm@11.24.0" }
+          EOF
+
+      - name: Install dependencies
+        working-directory: .
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Lint
+        working-directory: user
+        run: pnpm lint
+
+      - name: Typecheck
+        working-directory: user
+        run: pnpm typecheck
+
+      - name: Test
+        working-directory: user
+        run: pnpm test
+
+      - name: Build
+        working-directory: user
+        run: pnpm build
+
+  publish:
+    name: Publish to registry
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: publish
+    steps:
+      - name: Checkout user
+        uses: actions/checkout@v4
+        with:
+          path: user
+
+      - name: Checkout shared (sibling)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/shared
+          path: shared
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.24.0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Configure npm auth
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Create workspace root
+        working-directory: .
+        run: |
+          cat > pnpm-workspace.yaml <<'EOF'
+          packages:
+            - shared/packages/*
+            - user
+          EOF
+          cat > package.json <<'EOF'
+          { "name": "mf-ci-root", "version": "0.0.0", "private": true, "packageManager": "pnpm@11.24.0" }
+          EOF
+
+      - name: Install dependencies
+        working-directory: .
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Publish
+        working-directory: user
+        run: pnpm publish
