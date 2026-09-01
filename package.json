@@ -20,9 +20,9 @@
     "publish": "node scripts/publish.mjs"
   },
   "dependencies": {
-    "@shared/contracts": "workspace:*",
-    "@shared/design-tokens": "workspace:*",
-    "@shared/event-bus": "workspace:*",
+    "@jrumandal/contracts": "workspace:*",
+    "@jrumandal/design-tokens": "workspace:*",
+    "@jrumandal/event-bus": "workspace:*",
     "tslib": "^2.3.0"
   },
   "peerDependencies": {

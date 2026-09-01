@@ -1,7 +1,7 @@
 import { defineComponent, h, ref, computed, type PropType } from 'vue';
-import type { User, Address, LoginInput, UpdateProfileInput, MfApolloClient } from '@shared/contracts';
-import type { EventBus, MFEventMap } from '@shared/event-bus';
-import { UserEvent } from '@shared/event-bus';
+import type { User, Address, LoginInput, UpdateProfileInput, MfApolloClient } from '@jrumandal/contracts';
+import type { EventBus, MFEventMap } from '@jrumandal/event-bus';
+import { UserEvent } from '@jrumandal/event-bus';
 
 /**
  * Props accepted by the `UserPanel` component.

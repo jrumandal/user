@@ -19,7 +19,7 @@ jobs:
         with:
           path: user
 
-      # The user MF depends on the @shared/* packages. For a self-contained CI
+      # The user MF depends on the @jrumandal/* packages. For a self-contained CI
       # (no registry required), check out the shared repo as a sibling and wire
       # up a pnpm workspace so `workspace:*` resolves locally.
       - name: Checkout shared (sibling)
@@ -32,6 +32,7 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 11.24.0
+          runInstall: false
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -94,6 +95,7 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 11.24.0
+          runInstall: false
 
       - name: Set up Node
         uses: actions/setup-node@v4

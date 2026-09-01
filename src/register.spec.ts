@@ -1,6 +1,6 @@
 import { register, USER_ELEMENT_TAG } from './register';
 import { UserElement } from './user-element';
-import type { User } from '@shared/contracts';
+import type { User } from '@jrumandal/contracts';
 
 const user: User = {
   id: 'u-1',

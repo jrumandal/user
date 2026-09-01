@@ -1,5 +1,5 @@
-import type { EventBus, MFEventMap } from '@shared/event-bus';
-import type { MfApolloClient } from '@shared/contracts';
+import type { EventBus, MFEventMap } from '@jrumandal/event-bus';
+import type { MfApolloClient } from '@jrumandal/contracts';
 import { register } from './register';
 
 /**

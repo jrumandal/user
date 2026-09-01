@@ -1,7 +1,7 @@
 import { createApp, type App } from 'vue';
 import { UserPanel, type UserPanelProps } from './lib/user-panel';
-import type { User, LoginInput, UpdateProfileInput, MfApolloClient } from '@shared/contracts';
-import type { EventBus, MFEventMap } from '@shared/event-bus';
+import type { User, LoginInput, UpdateProfileInput, MfApolloClient } from '@jrumandal/contracts';
+import type { EventBus, MFEventMap } from '@jrumandal/event-bus';
 
 /**
  * A custom element that hosts the Vue `UserPanel` component in its light DOM.
