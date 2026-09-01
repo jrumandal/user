@@ -1,5 +1,5 @@
 {
-  "name": "@mf/user",
+  "name": "@jrumandal/user",
   "version": "0.0.1",
   "private": false,
   "type": "module",
@@ -16,7 +16,7 @@
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "build": "node -e \"console.log('@mf/user is source-only (no build step).')\"",
+    "build": "node -e \"console.log('@jrumandal/user is source-only (no build step).')\"",
     "publish": "node scripts/publish.mjs"
   },
   "dependencies": {

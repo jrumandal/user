@@ -1,5 +1,6 @@
 import { defineComponent, h, ref, computed, type PropType } from 'vue';
 import type { User, Address, LoginInput, UpdateProfileInput, MfApolloClient } from '@jrumandal/contracts';
+import { cssVar, Tokens } from '@jrumandal/design-tokens';
 import type { EventBus, MFEventMap } from '@jrumandal/event-bus';
 import { UserEvent } from '@jrumandal/event-bus';
 
@@ -38,6 +39,101 @@ export function formatAddress(address: Address): string {
   return parts.join(', ');
 }
 
+const styles = {
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: cssVar(Tokens.space.s3),
+    fontFamily: cssVar(Tokens.font.familySans),
+    color: cssVar(Tokens.color.textPrimary),
+    fontSize: cssVar(Tokens.font.sizeMd),
+    lineHeight: cssVar(Tokens.font.lineHeightNormal),
+    padding: cssVar(Tokens.space.s4),
+    border: `1px solid ${cssVar(Tokens.color.border)}`,
+    borderRadius: cssVar(Tokens.radius.md),
+    background: cssVar(Tokens.color.surface),
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: cssVar(Tokens.space.s2),
+  },
+  title: {
+    margin: 0,
+    fontSize: cssVar(Tokens.font.sizeLg),
+    fontWeight: cssVar(Tokens.font.weightSemibold),
+  },
+  badge: {
+    display: 'inline-block',
+    padding: `${cssVar(Tokens.space.s1)} ${cssVar(Tokens.space.s2)}`,
+    borderRadius: cssVar(Tokens.radius.full),
+    background: cssVar(Tokens.color.success),
+    color: cssVar(Tokens.color.textInverse),
+    fontSize: cssVar(Tokens.font.sizeSm),
+    fontWeight: cssVar(Tokens.font.weightMedium),
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: cssVar(Tokens.space.s2),
+  },
+  label: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: cssVar(Tokens.space.s1),
+    fontSize: cssVar(Tokens.font.sizeSm),
+    color: cssVar(Tokens.color.textSecondary),
+  },
+  input: {
+    padding: cssVar(Tokens.space.s2),
+    border: `1px solid ${cssVar(Tokens.color.border)}`,
+    borderRadius: cssVar(Tokens.radius.sm),
+    background: cssVar(Tokens.color.surface),
+    color: cssVar(Tokens.color.textPrimary),
+    fontSize: cssVar(Tokens.font.sizeMd),
+  },
+  error: {
+    margin: 0,
+    color: cssVar(Tokens.color.danger),
+    fontSize: cssVar(Tokens.font.sizeSm),
+  },
+  primaryBtn: {
+    padding: cssVar(Tokens.space.s2),
+    border: 'none',
+    borderRadius: cssVar(Tokens.radius.sm),
+    background: cssVar(Tokens.color.brand500),
+    color: cssVar(Tokens.color.textInverse),
+    fontSize: cssVar(Tokens.font.sizeMd),
+    fontWeight: cssVar(Tokens.font.weightMedium),
+    cursor: 'pointer',
+  },
+  profile: {
+    margin: 0,
+    display: 'grid',
+    gridTemplateColumns: 'auto 1fr',
+    gap: `${cssVar(Tokens.space.s1)} ${cssVar(Tokens.space.s3)}`,
+  },
+  dt: {
+    color: cssVar(Tokens.color.textSecondary),
+    fontSize: cssVar(Tokens.font.sizeSm),
+  },
+  dd: {
+    margin: 0,
+    fontSize: cssVar(Tokens.font.sizeMd),
+  },
+  dangerBtn: {
+    alignSelf: 'flex-start',
+    padding: cssVar(Tokens.space.s2),
+    border: `1px solid ${cssVar(Tokens.color.danger)}`,
+    borderRadius: cssVar(Tokens.radius.sm),
+    background: 'transparent',
+    color: cssVar(Tokens.color.danger),
+    fontSize: cssVar(Tokens.font.sizeMd),
+    cursor: 'pointer',
+  },
+} as const;
+
 /**
  * A presentational Vue `UserPanel` component.
  *
@@ -46,10 +142,6 @@ export function formatAddress(address: Address): string {
  * cross-MF events (via the shared `EventBus`) on user actions; the actual
  * GraphQL mutations are performed by the host shell, which wires the `on*`
  * callbacks to its data layer.
- *
- * Styling uses Tailwind v4 utility classes (resolved by the host shell's
- * Tailwind build, which maps the shared design tokens into the `@theme`
- * namespace).
  */
 export const UserPanel = defineComponent({
   name: 'UserPanel',
@@ -96,30 +188,25 @@ export const UserPanel = defineComponent({
       if (!signedIn.value) {
         return h(
           'section',
-          {
-            class:
-              'mf-user flex flex-col gap-3 font-sans text-text-primary text-md leading-normal p-4 border border-border rounded-md bg-surface',
-            'aria-label': 'Account',
-          },
+          { class: 'mf-user', style: styles.root, 'aria-label': 'Account' },
           [
-            h('header', { class: 'flex items-center justify-between gap-2' }, [
-              h('h2', { class: 'm-0 text-lg font-semibold' }, 'Sign in'),
+            h('header', { style: styles.header }, [
+              h('h2', { style: styles.title }, 'Sign in'),
             ]),
             h(
               'form',
               {
-                class: 'flex flex-col gap-2',
+                style: styles.form,
                 onSubmit: (event: Event) => {
                   event.preventDefault();
                   submitSignIn();
                 },
               },
               [
-                h('label', { class: 'flex flex-col gap-1 text-sm text-text-secondary' }, [
+                h('label', { style: styles.label }, [
                   'Email',
                   h('input', {
-                    class:
-                      'p-2 border border-border rounded-sm bg-surface text-text-primary text-md',
+                    style: styles.input,
                     type: 'email',
                     value: email.value,
                     onInput: (event: Event) => {
@@ -127,11 +214,10 @@ export const UserPanel = defineComponent({
                     },
                   }),
                 ]),
-                h('label', { class: 'flex flex-col gap-1 text-sm text-text-secondary' }, [
+                h('label', { style: styles.label }, [
                   'Password',
                   h('input', {
-                    class:
-                      'p-2 border border-border rounded-sm bg-surface text-text-primary text-md',
+                    style: styles.input,
                     type: 'password',
                     value: password.value,
                     onInput: (event: Event) => {
@@ -139,18 +225,8 @@ export const UserPanel = defineComponent({
                     },
                   }),
                 ]),
-                error.value
-                  ? h('p', { class: 'm-0 text-danger text-sm' }, error.value)
-                  : null,
-                h(
-                  'button',
-                  {
-                    class:
-                      'p-2 border-0 rounded-sm bg-brand-500 text-text-inverse text-md font-medium cursor-pointer',
-                    type: 'submit',
-                  },
-                  'Sign in',
-                ),
+                error.value ? h('p', { style: styles.error }, error.value) : null,
+                h('button', { style: styles.primaryBtn, type: 'submit' }, 'Sign in'),
               ],
             ),
           ],
@@ -160,32 +236,23 @@ export const UserPanel = defineComponent({
       const user = props.user as User;
       return h(
         'section',
-        {
-          class:
-            'mf-user flex flex-col gap-3 font-sans text-text-primary text-md leading-normal p-4 border border-border rounded-md bg-surface',
-          'aria-label': 'Account',
-        },
+        { class: 'mf-user', style: styles.root, 'aria-label': 'Account' },
         [
-          h('header', { class: 'flex items-center justify-between gap-2' }, [
-            h('h2', { class: 'm-0 text-lg font-semibold' }, 'Your account'),
-            h('span', { class: 'inline-block px-2 py-1 rounded-full bg-success text-text-inverse text-sm font-medium' }, 'Signed in'),
+          h('header', { style: styles.header }, [
+            h('h2', { style: styles.title }, 'Your account'),
+            h('span', { style: styles.badge }, 'Signed in'),
           ]),
-          h('dl', { class: 'm-0 grid grid-cols-[auto_1fr] gap-y-1 gap-x-3' }, [
-            h('dt', { class: 'text-text-secondary text-sm' }, 'Name'),
-            h('dd', { class: 'm-0 text-md' }, user.name),
-            h('dt', { class: 'text-text-secondary text-sm' }, 'Email'),
-            h('dd', { class: 'm-0 text-md' }, user.email),
-            h('dt', { class: 'text-text-secondary text-sm' }, 'Address'),
-            h('dd', { class: 'm-0 text-md' }, formatAddress(user.address)),
+          h('dl', { style: styles.profile }, [
+            h('dt', { style: styles.dt }, 'Name'),
+            h('dd', { style: styles.dd }, user.name),
+            h('dt', { style: styles.dt }, 'Email'),
+            h('dd', { style: styles.dd }, user.email),
+            h('dt', { style: styles.dt }, 'Address'),
+            h('dd', { style: styles.dd }, formatAddress(user.address)),
           ]),
           h(
             'button',
-            {
-              class:
-                'self-start p-2 border border-danger rounded-sm bg-transparent text-danger text-md cursor-pointer',
-              type: 'button',
-              onClick: submitSignOut,
-            },
+            { style: styles.dangerBtn, type: 'button', onClick: submitSignOut },
             'Sign out',
           ),
         ],

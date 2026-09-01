@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Publish @mf/user to the configured registry (GitHub Packages by default).
+ * Publish @jrumandal/user to the configured registry (GitHub Packages by default).
  * Bumps the patch version (or sets 0.0.1) and publishes with public access.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
