@@ -47,6 +47,18 @@ jobs:
           packages:
             - shared/packages/*
             - user
+          allowBuilds:
+            '@apollo/protobufjs': true
+            '@nestjs/core': true
+            '@parcel/watcher': true
+            '@prisma/client': true
+            '@prisma/engines': true
+            '@scarf/scarf': true
+            esbuild: true
+            lmdb: true
+            msgpackr-extract: true
+            prisma: true
+            unrs-resolver: true
           EOF
           cat > package.json <<'EOF'
           { "name": "mf-ci-root", "version": "0.0.0", "private": true, "packageManager": "pnpm@11.24.0" }
